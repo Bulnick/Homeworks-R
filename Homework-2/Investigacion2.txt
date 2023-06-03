@@ -1,0 +1,227 @@
+
+
+FUNCIONES EN R 
+
+Estructura de una Función -----------------------------------------------
+
+La sintaxis básica de una función de R es la siguiente.
+
+nombre_funcion <- function(arg1, arg2, ... ) {
+        # Código
+}
+
+
+arg1, arg2, ... # son los argumentos de entrada
+Código			# representa el código a ser ejecutado
+
+
+La salida de la función puede ser un número, una lista, un data.frame, un gráfico, un mensaje o cualquier objeto que queramos. 
+
+
+
+
+Ejemplo de una Funcion ---------------------------------------------------
+
+an <- function(a1, r, n){
+    a1 * r ** (n - 1)
+}
+
+an(a1 = 1, r = 2, n = 5)
+
+16
+
+an(a1 = 4, r = -2, n = 6)
+
+-128
+
+
+
+Argumentos de una Funcion -------------------------------------------------
+
+Los argumentos son valores de entrada de las funciones. Como ejemplo, en la función que creamos antes tenemos tres argumentos de entrada llamados a1, r y n. Hay varias consideraciones cuando se trata con este tipo de argumentos.
+
+Si mantenemos el orden de entrada, no necesitamos llamar a los nombres de los argumentos. Como ejemplo, las siguientes llamadas a la función son equivalentes.
+
+an(1, 2, 5) # Devuelve 16
+an(a1 = 1, r = 2, n = 5) # Devuelve 16
+
+Si ponemos el nombre de los argumentos, podemos usar cualquier oden.
+
+an(r = 2, n = 5, a1 = 1) # Devuelve 16
+an(n = 5, r = 2, a1 = 1) # Devuelve 16
+
+Podemos usar la función args para conocer los argumentos de entrada de cualquier función que queramos usar.
+
+args(an)
+
+Si escribimos el nombre de la función, la consola devolverá el código de la función.
+
+
+
+
+Retorno de Valores --------------------------------------------------------
+
+Las funciones anteriores solamente realizan una seria de pasos y finalizan sin devolver ningún valor. En muchas ocasiones deseamos que las funciones al finalizar su ejecución devuelvan algún valor. Para esto tenemos dos posibilidades.
+
+La primea es hacer que la ultima linea de código evaluada dentro de una función sea el valor que queremos que sea devuelto.
+
+
+## Función que cuenta la cantidad de vocales en una cadena que
+## se pasa como argumento 
+contar_vocales <- function(frase) 
+{
+  cantidad_vocales <- 0 
+  frase <- tolower(frase)
+  frase <- strsplit(frase, "")[[1]]
+ 
+  for (i in frase)
+  {
+    if (i %in% c("a", "e", "i", "o", "u"))
+    {
+      cantidad_vocales <- cantidad_vocales + 1
+    } 
+  }
+  cantidad_vocales 
+}
+
+resultado <- contar_vocales("Hola mundo, nuevamente")
+resultado
+
+
+La segunda alternativa es indicarlo explícitamente mediante el comando return(). En este ultimo caso, cuando se ejecuta esta instrucción dentro de una función, esta finaliza inmediatamente devolviendo el valor indicado. Lo común es reservar esta alternativa para devolver «señales» en caso de que la función tenga inconvenientes. Por ejemplo, en caso de que un argumento no sea consistente con lo esperado podemos devolver algún valor que nos indique de esta situación.
+
+calcular_raiz2 <- function(n)
+{
+  # Verifico que el que número pasado no sea negativo
+  if (n < 0) return("Numero negativo")
+ 
+  # En caso de que los argumentos sean consistentes,
+  # continuo con la ejecución de la función.
+  sqrt(n)
+}
+
+calcular_raiz2(2)
+1.414214
+
+calcular_raiz2(-2)
+"Numero negativo"
+
+
+
+
+FAMILIA APPLY
+
+apply ---------------------------------------------------------
+
+
+La función apply nos permite aplicar una función a una matriz, lista o vector que se le pase cómo parámetro.
+
+Argumento 1: matriz, lista o vector
+
+Argumento 2: Puede tomar valores 1 o 2
+
+1 para operar sobre las filas
+2 para operar sobre las columnas
+
+Argumento 3: Operador que se aplica sobre filas o columnas, según indique el argumento 2.
+
+Ejemplo
+
+mi_matriz <- matrix(1:9,nrow = 3, ncol = 3)
+mi_matriz
+     [,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9
+
+apply(mi_matriz,2,sum)
+[1]  6 15 24
+
+
+lapply --------------------------------------------------------
+
+Se diferencia con apply en que opera con listas. 
+
+
+Uso de lapply con funciones (ejemplos) ------------------------
+
+Ejemplo: Queremos calcular los días promedio asistidos y totales por todos los niños.
+
+
+df
+#   NOMBRES LUGAR_ASISTIR DIAS_ASISTIDOS DIAS_TOTALES
+# 1     Ana        Lugar1              8           10
+# 2 Javiera        Lugar2              7           10
+# 3    José        Lugar1             10           10
+# 4    Juan        Lugar2              5           10
+# 5  Miguel        Lugar1              6           10
+# 6   María        Lugar1             10           10
+
+Entonces ejecutamos la consulta:
+
+lapply(df[,c(3,4)], mean)
+
+# $DIAS_ASISTIDOS
+# [1] 7.666667
+# 
+# $DIAS_TOTALES
+# [1] 10
+
+
+
+sapply --------------------------------------------------------
+
+La función sapply() en R está hecha para realizarle operaciones a una lista, pero igual admite otro tipo de objeto La diferencia con la función apply() es que la función devuelve un vector.
+
+sapply(x, FUN)
+# x : matriz, dataframe, lista o vector.
+# FUN: Función que se aplica sobre filas o columnas.
+
+
+Uso de sapply con funciones (ejemplos) ------------------------
+
+
+Ejemplo: Queremos calcular los días promedio asistidos y totales por todos los niños.
+
+df
+#   NOMBRES LUGAR_ASISTIR DIAS_ASISTIDOS DIAS_TOTALES
+# 1     Ana        Lugar1              8           10
+# 2 Javiera        Lugar2              7           10
+# 3    José        Lugar1             10           10
+# 4    Juan        Lugar2              5           10
+# 5  Miguel        Lugar1              6           10
+# 6   María        Lugar1             10           10
+
+Entonces ejecutamos la consulta:
+
+sapply(df[,c(3,4)], mean)
+# DIAS_ASISTIDOS   DIAS_TOTALES 
+#       7.666667      10.000000
+
+
+
+vapply --------------------------------------------------------
+
+La funciòn vapply es muy similar comparada con sapply, pero cuando se usa vapply necesitamos especificar el tipo de salida. En el siguiente ejemplo un integer.
+
+Uso de vapply con funciones (ejemplos) ------------------------
+
+
+my_list <- list(1:5,                       # Se crea la lista de ejemplo
+                letters[1:3],
+                777)
+my_list                                    # se imprime
+# [[1]]
+# [1] 1 2 3 4 5
+# 
+# [[2]]
+# [1] "a" "b" "c"
+# 
+# [[3]]
+# [1] 777
+
+
+vapply(my_list, length, integer(1))        # Uso de la función vapply
+# 5 3 1
+
+
